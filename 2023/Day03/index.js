@@ -91,3 +91,35 @@ for (let i = 0; i < lines.length; i++) {
 const sumOfPartNumbers = numbersWithAdjacentSymbols.reduce((sum, obj) => sum + obj.value, 0);
 
 console.log(sumOfPartNumbers);
+
+/*----- Part Two ----- */
+
+// group an array of objects by a specific property
+const groupBy = (array, property) => {
+  const groups = {};
+  array.forEach((item) => {
+    const key = JSON.stringify(item[property]);
+    groups[key] = groups[key] || [];
+    groups[key].push(item);
+  });
+  return groups;
+}
+
+const groupedByAdjacentSymbols = groupBy(numbersWithAdjacentSymbols, 'adjacentSymbols');
+
+// find gears with the same adjacentSymbols object when the symbol equals '*'
+const gearsArray = Object.values(groupedByAdjacentSymbols)
+  .filter((parts) => parts.length > 1 && parts.some(part => part.adjacentSymbols[0].value === '*'))
+  .reduce((gears, parts) => {
+    const numbers = parts.map(part => part.value);
+    gears.push(numbers);
+    return gears;
+  }, []);
+
+// Get the gear ratio by multiplying the numbers together
+const gearRatios = gearsArray.map(array => array.reduce((acc, value) => acc * value, 1));
+
+// Get the sum of all gear ratios
+const sumOfGearRatios = gearRatios.reduce((acc, value) => acc + value, 0);
+
+console.log(sumOfGearRatios);
